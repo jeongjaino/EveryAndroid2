@@ -4,13 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +26,25 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun OnBoardingScreen(onContinueButtonClicked: () -> Unit){
+
+    Surface{
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text("Welcome to jaino world")
+            Button(
+                modifier = Modifier.padding(vertical = 24.dp),
+                onClick =  onContinueButtonClicked
+            ){
+                Text("Continue")
+            }
+        }
+    }
+}
 @Composable
 fun Greeting(name: String) {
 
@@ -55,7 +70,7 @@ fun Greeting(name: String) {
 }
 
 @Composable
-fun MyApp(names: List<String> = listOf("World" , "Compose")){
+fun Greetings(names: List<String> = listOf("World" , "Compose")){
     Column(){
         for(name in names){
             Greeting(name = name)
@@ -63,10 +78,25 @@ fun MyApp(names: List<String> = listOf("World" , "Compose")){
     }
 }
 
+@Composable
+fun MyApp(){
+
+    var shouldShowOnBoarding by remember { mutableStateOf(true) }
+
+    if(shouldShowOnBoarding){
+        OnBoardingScreen (onContinueButtonClicked = {
+            shouldShowOnBoarding = false
+        })
+    }
+    else{
+        Greetings()
+    }
+}
+
 @Preview(showBackground = true, widthDp = 320)
 @Composable
 fun DefaultPreview() {
     ComposeTutorial2Theme {
-        MyApp()
+        OnBoardingScreen(onContinueButtonClicked = {})
     }
 }
