@@ -23,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import com.example.composetutorial3.ui.theme.ComposeTutorial3Theme
 import kotlinx.coroutines.launch
@@ -238,10 +240,89 @@ fun BodyContent(modifier: Modifier = Modifier) {
             }
         })
 }
+
+@Composable
+fun ConstraintLayoutContent(){
+    ConstraintLayout( ) {
+
+        val (button1, text, button2) = createRefs()
+
+        Button(
+            onClick = {
+
+            },
+            modifier = Modifier.constrainAs(button1){
+                top.linkTo(parent.top, margin = 16.dp)
+            }
+        ){
+            Text("Button 1")
+        }
+        Text("Text", Modifier.constrainAs(text){
+            top.linkTo(button1.bottom, margin = 16.dp)
+            centerAround(button1.end)
+        })
+
+        val barrier = createEndBarrier(button1, text)
+        Button(
+            onClick = {},
+            modifier = Modifier.constrainAs(button2){
+                top.linkTo(parent.top, margin = 16.dp)
+                start.linkTo(barrier)
+            }
+        ){
+            Text("Button 2")
+        }
+    }
+}
+
+@Composable
+fun LargeConstraintLayout(){
+    ConstraintLayout {
+        val text = createRef()
+
+        val guideLine = createGuidelineFromStart(fraction = 0.5f)
+
+        Text(
+            "This is a very very very very very very very long text",
+            Modifier.constrainAs(text){
+                linkTo(start = guideLine, end = parent.end)
+                width = Dimension.preferredWrapContent
+            }
+        )
+    }
+}
+
+@Composable
+fun TwoTexts(modifier : Modifier = Modifier, text1: String, text2: String){
+    Row(modifier = modifier.height(IntrinsicSize.Max)){
+        // 하위 요소의 높이를 측정하여 제일 작은 큰 값으로 설정
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 4.dp)
+                .wrapContentWidth(Alignment.Start),
+            text = text1
+        )
+        Divider(color = Color.Black,
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(1.dp))
+        Text(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 4.dp)
+                .wrapContentWidth(Alignment.End),
+            text = text2
+        )
+    }
+}
+
 @Preview
 @Composable
 fun PhotographerCardPreview() {
     ComposeTutorial3Theme {
-        ScrollingList()
+        Surface{
+            TwoTexts(text1 = "Hi", text2 = "there")
+        }
     }
 }
