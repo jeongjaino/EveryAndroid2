@@ -53,7 +53,7 @@ class PlayListAdapter(private val callback: (MusicModel) -> Unit): ListAdapter<M
             }
 
             override fun areContentsTheSame(oldItem: MusicModel, newItem: MusicModel): Boolean {
-                return  oldItem.id == newItem.id
+                return  oldItem == newItem
             }
         }
     }
