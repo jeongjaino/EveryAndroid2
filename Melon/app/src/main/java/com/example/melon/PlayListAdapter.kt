@@ -1,6 +1,7 @@
 package com.example.melon
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,13 +25,14 @@ class PlayListAdapter(private val callback: (MusicModel) -> Unit): ListAdapter<M
                 .into(binding.itemCoverImageView)
 
             if(item.isPlaying){
-                itemView.setBackgroundColor(Color.GRAY)
+                binding.root.setBackgroundColor(Color.GRAY)
             }else{
-                itemView.setBackgroundColor(Color.TRANSPARENT)
+                binding.root.setBackgroundColor(Color.TRANSPARENT)
             }
 
-            itemView.setOnClickListener{
+            binding.root.setOnClickListener{
                 callback(item)
+                Log.d("tag", item.artist.toString())
             }
         }
     }
