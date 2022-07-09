@@ -180,7 +180,6 @@ class PlayerFragment : Fragment() {
         binding.playListSeekBar.setOnTouchListener{v, event ->
             false
         }
-
     }
 
     private fun updatePlayerView(currentMusicModel:MusicModel?){
