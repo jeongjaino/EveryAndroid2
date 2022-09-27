@@ -3,7 +3,7 @@ package com.example.stockmarket.di
 import android.app.Application
 import androidx.room.Room
 import com.example.stockmarket.data.local.StockDatabase
-import com.example.stockmarket.data.remote.dto.StockApi
+import com.example.stockmarket.data.remote.StockApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +20,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideStockApi(): StockApi{
+    fun provideStockApi(): StockApi {
         return Retrofit.Builder()
             .baseUrl(StockApi.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
