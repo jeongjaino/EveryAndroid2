@@ -16,7 +16,7 @@ interface StockDao {
     suspend fun clearCompanyListings()
 
     @Query(
-            """
+        """
             SELECT * 
             FROM companylistingentity
             WHERE LOWER(name) LIKE '%' || LOWER(:query) || '%' OR

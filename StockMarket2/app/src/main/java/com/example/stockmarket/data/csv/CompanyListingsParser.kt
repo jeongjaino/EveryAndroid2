@@ -6,8 +6,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CompanyListingsParser: CSVParser<CompanyListing> {
+//hilt가 이미 해당 parser를 초기화 하는 방법을 알기에 provide 할 필요가 없다.
+@Singleton
+class CompanyListingsParser @Inject constructor(): CSVParser<CompanyListing> {
 
     override suspend fun parse(stream: InputStream): List<CompanyListing> {
         val csvReader = CSVReader(InputStreamReader(stream))

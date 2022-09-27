@@ -22,6 +22,10 @@ class CompanyListingsViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
+    init{
+        getCompanyListings()
+    }
+
     fun onEvent(event : CompanyListingsEvent){
         when(event){
             is CompanyListingsEvent.Refresh ->{
@@ -40,7 +44,7 @@ class CompanyListingsViewModel @Inject constructor(
         }
     }
 
-    fun getCompanyListings(
+    private fun getCompanyListings(
         query: String = state.searchQuery.lowercase(),
         fetchFromRemote: Boolean = false
     ){
@@ -51,7 +55,7 @@ class CompanyListingsViewModel @Inject constructor(
                         is Resource.Success -> {
                             result.data?.let{ listings ->
                                 state = state.copy(
-
+                                    companies = listings
                                 )
                             }
                         }
