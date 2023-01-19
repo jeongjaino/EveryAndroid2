@@ -6,8 +6,9 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./CicdPractice
 
     steps:
     - uses: actions/checkout@v3
@@ -28,6 +29,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+      working-directory: ${{ env.working-directory }}
       
     - name: Run ktlint
       run: ./gradlew ktlintCheck
+      working-directory: ${{ env.working-directory }}
