@@ -22,7 +22,7 @@ jobs:
       run: |
         echo JAINO_API_KEY=\"$JAINO_API_KEY\" > local.properties
       env:
-        API_KEY: ${{ secrets.JAINO_API_KEY }}
+        JAINO_API_KEY: ${{ secrets.JAINO_API_KEY }}
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
