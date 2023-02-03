@@ -19,7 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-@UninstallModules(AppModule::class) // AppMoudle을 사용하지 않고, 테스트 AppModule을 사용
+@UninstallModules(AppModule::class) // AppModule 을 사용하지 않고, 테스트 AppModule 을 사용
 class NotesScreenTest{
 
     // 매번 테스트 전에 인젝션
@@ -49,7 +49,7 @@ class NotesScreenTest{
         }
     }
 
-    // 버튼을 찾고 누를 수 있는지
+    // 버튼을 클릭 후, 섹션이 보이는 지
     @Test
     fun clickToggleOrderSection_isVisible(){
         composeRule.onNodeWithTag(TestTags.ORDER_SECTION).assertDoesNotExist()
@@ -69,7 +69,7 @@ class NotesScreenTest{
 
         tagNameList.forEach{ tagName ->
             composeRule.onNodeWithTag(tagName).performClick()
-            composeRule.onNodeWithTag(TestTags.TITLE).assertIsSelected()
+            composeRule.onNodeWithTag(tagName).assertIsSelected()
         }
 
         composeRule.onNodeWithContentDescription("Sort").performClick()
