@@ -116,8 +116,37 @@ class NotesEndToEndTest {
     @Test
     fun saveNewNotes_orderByTitleDescending(){
         repeat(3){
-            
-        }
-    }
+            // 노트 추가 FAB 클릭
+            composeRule.onNodeWithContentDescription("Add").performClick()
 
+            // 임의의 내용과 제목 입력
+            composeRule
+                .onNodeWithTag(TestTags.TITLE_TEXT_FIELD)
+                .performTextInput(it.toString())
+            composeRule
+                .onNodeWithTag(TestTags.CONTENT_TEXT_FIELD)
+                .performTextInput(it.toString())
+            // 저장하기
+            composeRule.onNodeWithContentDescription("Save").performClick()
+        }
+
+        composeRule.onNodeWithText("0").assertIsDisplayed()
+        composeRule.onNodeWithText("1").assertIsDisplayed()
+        composeRule.onNodeWithText("2").assertIsDisplayed()
+
+        composeRule
+            .onNodeWithContentDescription("Sort")
+            .performClick()
+        composeRule
+            .onNodeWithTag("Descending")
+            .performClick()
+
+        // Radio Button Modifier semantic contentDescription이 testTag보다 접근성에 유용
+        composeRule.onAllNodesWithTag(TestTags.NOTE_ITEM)[0]
+            .assertTextContains("2")
+        composeRule.onAllNodesWithTag(TestTags.NOTE_ITEM)[1]
+            .assertTextContains("1")
+        composeRule.onAllNodesWithTag(TestTags.NOTE_ITEM)[2]
+            .assertTextContains("0")
+    }
 }
