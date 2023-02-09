@@ -16,6 +16,7 @@
 
 package com.example.android.unscramble.ui.game
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,7 +33,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
  */
 class GameFragment : Fragment() {
 
-    private val viewModel : GameViewModel by viewModels()
+    private val viewModel : GameViewModel by viewModels {
+        GameViewModelFactory(requireContext().applicationContext as Application, this)
+    }
 
     // Binding object instance with access to the views in the game_fragment.xml layout
     private lateinit var binding: GameFragmentBinding

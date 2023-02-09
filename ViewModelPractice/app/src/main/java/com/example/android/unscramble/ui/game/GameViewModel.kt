@@ -1,15 +1,17 @@
 package com.example.android.unscramble.ui.game
 
+import com.example.android.unscramble.data.GameRepository
+import android.app.Application
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TtsSpan
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
 import kotlinx.coroutines.flow.*
-import java.util.*
+import kotlinx.coroutines.launch
 import kotlin.random.Random
+import java.util.*
 
 class SavableMutableStateFlow<T>(
     private val savedStateHandle: SavedStateHandle,
@@ -29,7 +31,10 @@ class SavableMutableStateFlow<T>(
 fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavableMutableStateFlow<T> =
     SavableMutableStateFlow(this, key, initialValue)
 
-class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
+class GameViewModel(
+    private val stateHandler: SavedStateHandle,
+    private val repository : GameRepository
+): ViewModel() {
 
     private var wordsList: List<String> // 게임 사용 단어 목록 보유
         get() = stateHandler["wordsList"] ?: emptyList()
@@ -55,6 +60,12 @@ class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
     private val _score = stateHandler.getMutableStateFlow("score", 0)
     val score: StateFlow<Int>
         get() = _score.asStateFlow()
+
+    val highScore : StateFlow<Int> = repository.highScore.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        0
+    )
 
     private val _currentWordCount =stateHandler.getMutableStateFlow("currentWordCount", 0) // 현재 단어 번호
     val currentWordCount: StateFlow<Int>
@@ -95,6 +106,9 @@ class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
     // 맞추는 경우 점수를 높이는 함수
     private fun increaseScore(){
         _score.value += SCORE_INCREASE
+        viewModelScope.launch {
+            repository.updateScore(_score.value)
+        }
     }
 
     // 검증 함수
@@ -111,5 +125,30 @@ class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
         _currentWordCount.value = 0
         wordsList = emptyList()
         nextWord()
+    }
+}
+
+// viewModel을 생성하기 위해 custom한 요소들 생성자로 받아야함.
+// Factory를 활용하여, savedStateHandle을 생성하고 관리하기 귀찮은 부분 해결 .
+class GameViewModelFactory(
+    private val application : Application,
+    owner : SavedStateRegistryOwner,
+    defaultArgs : Bundle? = null,
+) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+    override fun <T : ViewModel> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle,
+    ): T {
+        // modelClass가 gameViewModel로 대입이 되었는가
+        require(modelClass.isAssignableFrom(GameViewModel::class.java)){
+            "Unknown ViewModel class"
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        return GameViewModel(
+            stateHandler = handle,
+            repository = GameRepository(application)
+        ) as T // java와 kotlin의 nullable 차이
     }
 }
