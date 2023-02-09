@@ -56,11 +56,11 @@ class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
     val score: StateFlow<Int>
         get() = _score.asStateFlow()
 
-    private val _currentWordCount =stateHandler.getMutableStateFlow("score", 0) // 현재 단어 번호
+    private val _currentWordCount =stateHandler.getMutableStateFlow("currentWordCount", 0) // 현재 단어 번호
     val currentWordCount: StateFlow<Int>
         get() = _currentWordCount.asStateFlow()
 
-    private val _currentScrambleWord = stateHandler.getMutableStateFlow("score", "") // viewModel에서만 사용
+    private val _currentScrambleWord = stateHandler.getMutableStateFlow("currentScrambledWord", "") // viewModel에서만 사용
     val currentScrambleWord : StateFlow<Spannable> = _currentScrambleWord
         .asStateFlow()
         .onSubscription {
@@ -78,28 +78,8 @@ class GameViewModel(private val stateHandler: SavedStateHandle): ViewModel() {
             )
             spannable
         }
-        // map은 flow로 반환 stateIn()은 stateFlow로 반환
+        // map은 flow로 반환, stateIn()은 stateFlow로 반환
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SpannableString(""))
-
-    // viewModel 인스턴스가 초기화될 때 생성
-    init{
-        Log.d("GameFragment", "GameViewModel created!")
-        // getNextWord()
-    }
-
-    // destroy 시 호출, 연결된 프래그먼트가 분리되거나, destroy 되면 소멸
-    override fun onCleared() {
-        super.onCleared()
-        Log.d("GameFragment", "GameViewModel destroyed!")
-    }
-
-/*    private fun getNextWord(){
-        var nextWord : String
-        do{
-            nextWord = allWordsList.random(Random(Calendar.getInstance().timeInMillis))
-        } while(wordsList.contains(currentWord))
-        currentWord = nextWord
-    }*/
 
     fun nextWord(): Boolean{
         return if(currentWordCount.value < MAX_NO_OF_WORDS){
