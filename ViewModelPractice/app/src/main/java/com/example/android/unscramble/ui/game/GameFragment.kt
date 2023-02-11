@@ -16,8 +16,6 @@
 
 package com.example.android.unscramble.ui.game
 
-import android.app.Application
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,32 +23,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import com.example.android.unscramble.MainActivity
 import com.example.android.unscramble.R
 import com.example.android.unscramble.databinding.GameFragmentBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment where the game is played, contains the game logic.
  */
+// HiltFragment를 상속받으며, onAttach에서 주입이 이뤄지고 있음.
+
+@AndroidEntryPoint
 class GameFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel : GameViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel : GameViewModel by viewModels()
 
     // Binding object instance with access to the views in the game_fragment.xml layout
     private lateinit var binding: GameFragmentBinding
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity as MainActivity).gameComponent.inject(this)
-    }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,

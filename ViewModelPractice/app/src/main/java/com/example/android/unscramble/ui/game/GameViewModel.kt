@@ -1,22 +1,21 @@
 package com.example.android.unscramble.ui.game
 
 import com.example.android.unscramble.data.GameRepository
-import android.app.Application
-import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.TtsSpan
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
-import dagger.assisted.Assisted
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import java.util.*
 import javax.inject.Inject
 
-class GameViewModel @Assisted constructor(
-    @Assisted private val stateHandler: SavedStateHandle,
+
+@HiltViewModel
+class GameViewModel @Inject constructor(
+    private val stateHandler: SavedStateHandle, // hiltViewModel이 자동으로 주입해줌.
     private val repository : GameRepository
 ): ViewModel() {
 
@@ -114,7 +113,7 @@ class GameViewModel @Assisted constructor(
 
 // viewModel을 생성하기 위해 custom한 요소들 생성자로 받아야함.
 // Factory를 활용하여, savedStateHandle을 생성하고 관리하기 귀찮은 부분 해결 .
-class GameViewModelFactory(
+/*class GameViewModelFactory(
     private val application : Application,
     owner : SavedStateRegistryOwner,
     defaultArgs : Bundle? = null,
@@ -132,10 +131,10 @@ class GameViewModelFactory(
         @Suppress("UNCHECKED_CAST")
         return GameViewModel(
             stateHandler = handle,
-            repository = GameRepository(application)
+            repository = GameRepository
         ) as T // java와 kotlin의 nullable 차이
     }
-}
+}*/
 
 class SavableMutableStateFlow<T>(
     private val savedStateHandle: SavedStateHandle,
