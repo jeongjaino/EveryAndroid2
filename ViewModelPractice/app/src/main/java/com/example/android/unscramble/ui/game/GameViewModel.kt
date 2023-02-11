@@ -8,31 +8,15 @@ import android.text.SpannableString
 import android.text.style.TtsSpan
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistryOwner
+import dagger.assisted.Assisted
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import java.util.*
+import javax.inject.Inject
 
-class SavableMutableStateFlow<T>(
-    private val savedStateHandle: SavedStateHandle,
-    private val key : String,
-    initialValue: T
-){
-    private val state: StateFlow<T> = savedStateHandle.getStateFlow(key, initialValue)
-    var value : T
-        get() = state.value
-        set(value){
-        savedStateHandle[key] = value
-        }
-
-    fun asStateFlow(): StateFlow<T> = state
-}
-
-fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavableMutableStateFlow<T> =
-    SavableMutableStateFlow(this, key, initialValue)
-
-class GameViewModel(
-    private val stateHandler: SavedStateHandle,
+class GameViewModel @Assisted constructor(
+    @Assisted private val stateHandler: SavedStateHandle,
     private val repository : GameRepository
 ): ViewModel() {
 
@@ -152,3 +136,21 @@ class GameViewModelFactory(
         ) as T // java와 kotlin의 nullable 차이
     }
 }
+
+class SavableMutableStateFlow<T>(
+    private val savedStateHandle: SavedStateHandle,
+    private val key : String,
+    initialValue: T
+){
+    private val state: StateFlow<T> = savedStateHandle.getStateFlow(key, initialValue)
+    var value : T
+        get() = state.value
+        set(value){
+            savedStateHandle[key] = value
+        }
+
+    fun asStateFlow(): StateFlow<T> = state
+}
+
+fun <T> SavedStateHandle.getMutableStateFlow(key: String, initialValue: T): SavableMutableStateFlow<T> =
+    SavableMutableStateFlow(this, key, initialValue)
